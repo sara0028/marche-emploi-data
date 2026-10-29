@@ -1,0 +1,16 @@
+# Identifiants et secrets : ne jamais publier
+.env
+identifiants_*
+ 
+# Fichiers générés par Python et par les éditeurs
+__pycache__/
+*.pyc
+venv/
+.venv/
+.DS_Store
+
+# Document personnel
+Projet Informatique dans la data*
+
+# Fichier intermédiaire, recréé par filtrer_offres.py
+offres_data_filtrees.csv
