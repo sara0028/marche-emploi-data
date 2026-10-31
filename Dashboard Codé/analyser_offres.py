@@ -1,26 +1,22 @@
 """
-CE PROGRAMME FAIT 3 CHOSES, DANS L'ORDRE :
-1. Il charge le fichier propre (créé par nettoyer_offres.py)
-2. Il compte les offres selon 4 critères : métier, télétravail, expérience, département
-3. Il dessine un graphique pour chaque critère et l'enregistre en image (.png)
+Ce programme:
+- charge le fichier propre (créé par nettoyer_offres.py)
+- compte les offres selon 4 critères : métier, télétravail, expérience, département
+- dessine un graphique pour chaque critère et l'enregistre en image (.png)
 """
 
 import pandas as pd  # pandas : pour manipuler le tableau de données
 import matplotlib.pyplot as plt  # matplotlib : pour dessiner des graphiques, on l'appelle "plt" pour faire plus court
 
-# ------------------------------------------------------------
 # ÉTAPE 1 : charger le fichier propre
-# ------------------------------------------------------------
 
-# dtype={"Département": str} dit à pandas de lire les départements comme du texte (sinon "75" deviendrait le nombre 75.0)
 offres = pd.read_csv("offres_data_propres.csv", sep=";", dtype={"Département": str})  # on lit le CSV et on le met dans la variable "offres"
+# dtype={"Département": str} dit à pandas de lire les départements comme du texte (sinon "75" deviendrait le nombre 75.0)
 
 print("Nombre d'offres analysées :", len(offres))  # on affiche le nombre de lignes pour vérifier
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 1 : les métiers les plus recherchés
-# ------------------------------------------------------------
 
 metiers = offres["Métier"].value_counts().head(8)  # on compte combien d'offres par métier et on garde les 8 premiers
 
@@ -34,9 +30,7 @@ plt.savefig("graphique_1_metiers.png")  # on enregistre le graphique dans une im
 plt.close()  # on ferme le graphique pour repartir de zéro au suivant
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 2 : le télétravail
-# ------------------------------------------------------------
 
 teletravail = offres["Télétravail"].value_counts()  # on compte combien d'offres par réponse (Oui, Non, Non renseigné)
 
@@ -51,9 +45,8 @@ plt.savefig("graphique_2_teletravail.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 3 : le niveau d'expérience demandé
-# ------------------------------------------------------------
+
 
 experience = offres["Niveau d'expérience min. requis"].value_counts()  # on compte combien d'offres par niveau d'expérience
 
@@ -68,12 +61,10 @@ plt.savefig("graphique_3_experience.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 4 : les départements qui recrutent le plus
-# ------------------------------------------------------------
 
 # On enlève les offres sans département connu, pour ne pas fausser le classement
-avec_departement = offres[offres["Département"] != "Non renseigné"]  # != veut dire "est différent de" : on garde les lignes où le département est connu
+avec_departement = offres[offres["Département"] != "Non renseigné"]  # on garde les lignes où le département est connu
 
 departements = avec_departement["Département"].value_counts().head(10)  # on compte par département et on garde les 10 premiers
 
@@ -87,4 +78,4 @@ plt.tight_layout()  # on ajuste les marges
 plt.savefig("graphique_4_departements.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
-print("4 graphiques créés : regarde les fichiers graphique_1 à graphique_4 dans ton dossier.")  # message final
+print("4 graphiques créés : regarde les fichiers graphique_1 à graphique_4 dans ton dossier.")  # message final dans le terminal

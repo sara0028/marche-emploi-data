@@ -1,11 +1,11 @@
 """
-CE PROGRAMME FAIT 6 GRAPHIQUES DE PLUS (suite de analyser_offres.py) :
-5. Le niveau d'études demandé
-6. La répartition des 5 métiers les plus fréquents (camembert)
-7. Les départements qui recrutent le plus, hors Île-de-France
-8. Pour chaque métier : télétravail oui / non
-9. Pour chaque métier : niveau d'expérience demandé
-10. Pour chaque métier : niveau d'études demandé
+Ce programme fait suite de analyser_offres.py :
+- Le niveau d'études demandé
+- La répartition des 5 métiers les plus fréquents (camembert)
+- Les départements qui recrutent le plus, hors Île-de-France
+- Pour chaque métier : télétravail oui / non
+- Pour chaque métier : niveau d'expérience demandé
+- Pour chaque métier : niveau d'études demandé
 
 Les graphiques 8, 9 et 10 sont des graphiques "croisés" : on regarde deux
 colonnes en même temps (par exemple le métier ET le télétravail).
@@ -14,22 +14,19 @@ colonnes en même temps (par exemple le métier ET le télétravail).
 import pandas as pd  # pandas : pour manipuler le tableau de données
 import matplotlib.pyplot as plt  # matplotlib : pour dessiner les graphiques
 
-# ------------------------------------------------------------
 # CHARGER LE FICHIER PROPRE
-# ------------------------------------------------------------
 
 offres = pd.read_csv("offres_data_propres.csv", sep=";", dtype={"Département": str})  # on lit le CSV (départements lus comme du texte)
 
 print("Nombre d'offres analysées :", len(offres))  # on affiche le nombre de lignes pour vérifier
 
 # On prépare la liste des 5 métiers les plus fréquents : on s'en servira pour les graphiques croisés
-# (avec tous les métiers, les graphiques seraient illisibles)
-top5_metiers = offres["Métier"].value_counts().head(5).index  # .index récupère juste les NOMS des 5 métiers (pas leurs nombres)
+# avec tous les métiers, les graphiques seraient illisibles
+top5_metiers = offres["Métier"].value_counts().head(5).index  
+# .index:  récupère juste les noms des 5 métiers (pas leurs nombres)
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 5 : le niveau d'études demandé
-# ------------------------------------------------------------
 
 # On enlève les offres où le niveau d'études n'est pas indiqué, sinon cette barre écraserait toutes les autres
 etudes_connues = offres[offres["Niveau d'études"] != "Non renseigné"]  # != veut dire "est différent de"
@@ -46,9 +43,7 @@ plt.savefig("graphique_5_etudes.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 6 : camembert des 5 métiers les plus fréquents
-# ------------------------------------------------------------
 
 metiers_top5 = offres["Métier"].value_counts().head(5)  # on compte les offres par métier et on garde les 5 premiers
 
@@ -61,18 +56,15 @@ plt.savefig("graphique_6_camembert_metiers.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 7 : les départements hors Île-de-France
-# ------------------------------------------------------------
 
 # Les numéros des départements d'Île-de-France
 ile_de_france = ["75", "77", "78", "91", "92", "93", "94", "95"]  # une liste de textes
 
 # On garde les offres dont le département est connu ET n'est pas en Île-de-France
-# .isin(liste) vérifie si la valeur est dans la liste ; le ~ devant veut dire "le contraire" (donc : PAS dans la liste)
-# le & veut dire "et" : les deux conditions doivent être vraies
 hors_idf = offres[(offres["Département"] != "Non renseigné") & (~offres["Département"].isin(ile_de_france))]
-
+# .isin(liste): vérifie si la valeur est dans la liste
+#le ~: devant veut dire "le contraire" donc il n'est pas dans la liste
 departements_hors_idf = hors_idf["Département"].value_counts().head(10)  # on compte par département et on garde les 10 premiers
 
 plt.figure(figsize=(8, 5))  # taille du graphique
@@ -86,17 +78,17 @@ plt.savefig("graphique_7_departements_hors_idf.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 8 : pour chaque métier, télétravail oui / non
-# ------------------------------------------------------------
+
 
 # On garde seulement les 5 métiers principaux, et les offres où le télétravail est précisé
-# .isin(top5_metiers) vérifie que le métier fait partie des 5 premiers ; & veut dire "et"
 sous_tableau = offres[offres["Métier"].isin(top5_metiers) & (offres["Télétravail"] != "Non renseigné")]
+# .isin(top5_metiers) vérifie que le métier fait partie des 5 premiers
 
-# pd.crosstab compte, pour chaque métier, combien d'offres ont "Oui" et combien ont "Non"
+
 # Le résultat est un petit tableau : une ligne par métier, une colonne par réponse
 croise_teletravail = pd.crosstab(sous_tableau["Métier"], sous_tableau["Télétravail"])
+# pd.crosstab: compte, pour chaque métier, combien d'offres ont "Oui" et combien ont "Non"
 
 croise_teletravail.plot(kind="barh", stacked=True, figsize=(10, 5))  # barres horizontales "empilées" (Oui et Non dans la même barre)
 plt.title("Télétravail selon le métier (offres qui le précisent)")  # le titre
@@ -107,12 +99,12 @@ plt.savefig("graphique_8_metier_teletravail.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
+
 # GRAPHIQUE 9 : pour chaque métier, niveau d'expérience demandé
-# ------------------------------------------------------------
+
 
 # Même principe que le graphique 8, mais avec la colonne "Niveau d'expérience min. requis"
-sous_tableau = offres[offres["Métier"].isin(top5_metiers) & (offres["Niveau d'expérience min. requis"] != "Non renseigné")]  # 5 métiers + expérience précisée
+sous_tableau = offres[offres["Métier"].isin(top5_metiers) & (offres["Niveau d'expérience min. requis"] != "Non renseigné")]  # 5 métiers et expérience précisée
 
 croise_experience = pd.crosstab(sous_tableau["Métier"], sous_tableau["Niveau d'expérience min. requis"])  # on compte pour chaque métier
 
@@ -125,12 +117,10 @@ plt.savefig("graphique_9_metier_experience.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
 
-# ------------------------------------------------------------
 # GRAPHIQUE 10 : pour chaque métier, niveau d'études demandé
-# ------------------------------------------------------------
 
 # Même principe, avec la colonne "Niveau d'études"
-sous_tableau = offres[offres["Métier"].isin(top5_metiers) & (offres["Niveau d'études"] != "Non renseigné")]  # 5 métiers + études précisées
+sous_tableau = offres[offres["Métier"].isin(top5_metiers) & (offres["Niveau d'études"] != "Non renseigné")]  # 5 métiers et études précisées
 
 croise_etudes = pd.crosstab(sous_tableau["Métier"], sous_tableau["Niveau d'études"])  # on compte pour chaque métier
 
@@ -142,4 +132,4 @@ plt.tight_layout()  # on ajuste les marges
 plt.savefig("graphique_10_metier_etudes.png")  # on enregistre l'image
 plt.close()  # on ferme le graphique
 
-print("6 graphiques créés : fichiers graphique_5 à graphique_10 dans ton dossier.")  # message final
+print("6 graphiques créés : fichiers graphique_5 à graphique_10 dans ton dossier.")  # message final dans le terminal
